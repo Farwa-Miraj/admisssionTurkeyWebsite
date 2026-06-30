@@ -1,5 +1,32 @@
-import { motion } from 'framer-motion';
 import AnimatedSection from '../ui/AnimatedSection.jsx';
+
+const CARD_GRADIENTS = [
+  'linear-gradient(135deg, #ffffff 45%, #fff0f5 100%)',
+  'linear-gradient(135deg, #ffffff 45%, #f0f6ff 100%)',
+  'linear-gradient(135deg, #ffffff 45%, #f0fff5 100%)',
+  'linear-gradient(135deg, #ffffff 45%, #fff8f0 100%)',
+  'linear-gradient(135deg, #ffffff 45%, #f5f0ff 100%)',
+  'linear-gradient(135deg, #ffffff 45%, #f0fffe 100%)',
+];
+
+function ReviewCard({ testimonial, gradientIndex }) {
+  return (
+    <div
+      className="review-card"
+      style={{ background: CARD_GRADIENTS[gradientIndex % CARD_GRADIENTS.length] }}
+    >
+      <div className="review-card__header">
+        <div className="review-card__avatar">{testimonial.avatar}</div>
+        <div>
+          <h4 className="review-card__name">{testimonial.name}</h4>
+          <span className="review-card__role">{testimonial.role}</span>
+        </div>
+      </div>
+      <div className="review-card__stars">{'★'.repeat(testimonial.stars)}</div>
+      <p className="review-card__text">“{testimonial.text}”</p>
+    </div>
+  );
+}
 
 const row1 = [
   {
@@ -68,17 +95,7 @@ export default function Testimonials() {
         <div className="reviews-row__track reviews-row__track--left">
           {/* Double the array for infinite scrolling */}
           {[...row1, ...row1, ...row1].map((t, idx) => (
-            <div key={idx} className="review-card">
-              <div className="review-card__header">
-                <div className="review-card__avatar">{t.avatar}</div>
-                <div>
-                  <h4 className="review-card__name">{t.name}</h4>
-                  <span className="review-card__role">{t.role}</span>
-                </div>
-              </div>
-              <div className="review-card__stars">{'★'.repeat(t.stars)}</div>
-              <p className="review-card__text">“{t.text}”</p>
-            </div>
+            <ReviewCard key={idx} testimonial={t} gradientIndex={idx} />
           ))}
         </div>
       </div>
@@ -87,17 +104,7 @@ export default function Testimonials() {
       <div className="reviews-row">
         <div className="reviews-row__track reviews-row__track--right">
           {[...row2, ...row2, ...row2].map((t, idx) => (
-            <div key={idx} className="review-card">
-              <div className="review-card__header">
-                <div className="review-card__avatar">{t.avatar}</div>
-                <div>
-                  <h4 className="review-card__name">{t.name}</h4>
-                  <span className="review-card__role">{t.role}</span>
-                </div>
-              </div>
-              <div className="review-card__stars">{'★'.repeat(t.stars)}</div>
-              <p className="review-card__text">“{t.text}”</p>
-            </div>
+            <ReviewCard key={idx} testimonial={t} gradientIndex={idx + 3} />
           ))}
         </div>
       </div>

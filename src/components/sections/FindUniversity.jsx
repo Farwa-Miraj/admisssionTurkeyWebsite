@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import AnimatedSection from '../ui/AnimatedSection.jsx';
+import GlassButton from '../ui/GlassButton.jsx';
 import { useApplyForm } from '../../context/ApplyFormContext.jsx';
 
 const universities = [
@@ -9,17 +10,15 @@ const universities = [
     type: 'Public',
     programs: '100+',
     tuition: '$1,200/yr',
-    image: '/assets/university-campus.jpg',
-    logoInitials: 'IU',
-  },
+    image: '/assets/istanbul-university.png',
+    },
   {
     name: 'Istanbul Medipol University',
     location: 'Istanbul • Medical specialty',
     type: 'Private',
     programs: '85+',
     tuition: '$4,000/yr',
-    image: '/assets/medipol-university.jpg',
-    logoInitials: 'IMU',
+    image: '/assets/medipol.png',
   },
   {
     name: 'Hacettepe University',
@@ -27,8 +26,7 @@ const universities = [
     type: 'Public',
     programs: '95+',
     tuition: '$1,500/yr',
-    image: '/assets/aerial-university.jpg',
-    logoInitials: 'HU',
+    image: '/assets/HacettepeUniversity.png',
   },
   {
     name: 'Koc University',
@@ -36,8 +34,7 @@ const universities = [
     type: 'Private',
     programs: '50+',
     tuition: '$15,000/yr',
-    image: '/assets/students-group.jpg',
-    logoInitials: 'KU',
+    image: '/assets/KOC.png',
   },
   {
     name: 'Istanbul Technical University',
@@ -45,8 +42,7 @@ const universities = [
     type: 'Public',
     programs: '75+',
     tuition: '$1,800/yr',
-    image: '/assets/university-campus.jpg',
-    logoInitials: 'ITU',
+    image: '/assets/ITU.png',
   },
   {
     name: 'Istanbul Aydin University',
@@ -54,8 +50,7 @@ const universities = [
     type: 'Private',
     programs: '110+',
     tuition: '$3,200/yr',
-    image: '/assets/medipol-university.jpg',
-    logoInitials: 'IAU',
+    image: '/assets/aydin.png',
   },
 ];
 
@@ -66,10 +61,8 @@ export default function FindUniversity() {
     <section id="universities" className="universities-section">
       <div className="container">
         <AnimatedSection className="universities-section__title">
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--navy)' }}>
-            Where our students study
-          </h2>
-          <p style={{ color: 'var(--gray-text)', marginTop: '8px', maxWidth: '600px', margin: '8px auto 0' }}>
+          <h2 className="universities-section__heading">Where our students study</h2>
+          <p className="universities-section__subtitle">
             Hand-picked institutions across Türkiye - from world-renowned public universities to specialized private faculties with full English instruction.
           </p>
         </AnimatedSection>
@@ -95,41 +88,31 @@ export default function FindUniversity() {
                 </span>
               </div>
 
-              {/* Card Body */}
               <div className="university-card__content">
-                <div className="university-card__header-info">
-                  <div className="university-card__logo-placeholder">
-                    {uni.logoInitials}
-                  </div>
-                  <div>
-                    <h4 className="university-card__title">{uni.name}</h4>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--gray-text)' }}>
-                      {uni.location}
-                    </span>
-                  </div>
-                </div>
+                <h4 className="university-card__title">{uni.name}</h4>
+                <span className="university-card__location">{uni.location}</span>
 
                 <div className="university-card__meta">
                   <div className="university-card__meta-item">
-                    <span className="university-card__meta-lbl">Programs</span>
                     <span className="university-card__meta-val">{uni.programs}</span>
+                    <span className="university-card__meta-lbl">Programs</span>
                   </div>
                   <div className="university-card__meta-item">
-                    <span className="university-card__meta-lbl">Tuition From</span>
-                    <span className="university-card__meta-val" style={{ color: 'var(--orange)', fontWeight: 700 }}>
+                    <span className="university-card__meta-val university-card__meta-val--tuition">
                       {uni.tuition}
                     </span>
+                    <span className="university-card__meta-lbl">From</span>
                   </div>
                 </div>
 
-                <button
+                <GlassButton
                   type="button"
-                  className="btn btn--outline-navy university-card__btn"
+                  variant="outline-navy"
+                  className="university-card__btn"
                   onClick={openApplyForm}
-                  style={{ fontSize: '0.8rem', padding: '10px 16px' }}
                 >
                   View Programs
-                </button>
+                </GlassButton>
               </div>
             </motion.div>
           ))}
@@ -137,15 +120,14 @@ export default function FindUniversity() {
 
         {/* Bottom CTA */}
         <AnimatedSection className="universities-section__btn-wrap">
-          <motion.button
+          <GlassButton
             type="button"
-            className="btn btn--orange btn--lg"
+            variant="orange"
+            size="lg"
             onClick={openApplyForm}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
           >
             Browse all 80+ universities →
-          </motion.button>
+          </GlassButton>
         </AnimatedSection>
       </div>
     </section>

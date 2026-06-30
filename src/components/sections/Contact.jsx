@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
 import AnimatedSection from '../ui/AnimatedSection';
+import GlassButton from '../ui/GlassButton.jsx';
 
 export default function Contact() {
   return (
@@ -67,14 +67,9 @@ export default function Contact() {
               <input type="text" placeholder="Subject" />
             </div>
             <textarea placeholder="Message" rows={5} required />
-            <motion.button
-              type="submit"
-              className="btn btn--orange"
-              whileHover={{ scale: 1.04, boxShadow: '0 8px 25px rgba(239, 125, 0, 0.45)' }}
-              whileTap={{ scale: 0.97 }}
-            >
+            <GlassButton type="submit" variant="orange">
               Send Message
-            </motion.button>
+            </GlassButton>
           </form>
         </AnimatedSection>
       </div>

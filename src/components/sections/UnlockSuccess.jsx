@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedSection from '../ui/AnimatedSection';
+import GlassButton from '../ui/GlassButton.jsx';
 
 const accordionItems = [
   {
@@ -57,11 +58,11 @@ export default function UnlockSuccess() {
               const isActive = activeIndex === index;
               return (
                 <div key={item.title} className="accordion__item">
-                  <motion.button
+                  <GlassButton
+                    type="button"
+                    variant="inherit"
                     className={`accordion__header ${isActive ? 'accordion__header--active' : ''}`}
                     onClick={() => setActiveIndex(isActive ? -1 : index)}
-                    whileHover={{ scale: isActive ? 1 : 1.01 }}
-                    whileTap={{ scale: 0.99 }}
                   >
                     <svg
                       className={`accordion__chevron ${isActive ? 'accordion__chevron--open' : ''}`}
@@ -73,7 +74,7 @@ export default function UnlockSuccess() {
                       <polyline points="6 9 12 15 18 9" />
                     </svg>
                     {item.title}
-                  </motion.button>
+                  </GlassButton>
                   <AnimatePresence>
                     {isActive && (
                       <motion.div

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { buildWhatsAppUrl } from '../../utils/whatsapp';
+import GlassButton from '../ui/GlassButton.jsx';
 
 const navLinks = [
   { label: 'Study in Turkey', href: '#home' },
@@ -45,27 +46,29 @@ export default function Header() {
             </a>
           </div>
           <div className="top-bar__languages">
-            <button
+            <GlassButton
               type="button"
-              className={`top-bar__lang-btn ${lang === 'EN' ? 'top-bar__lang-btn--active' : ''}`}
+              variant="lang"
+              className={`top-bar__lang-btn ${lang === 'EN' ? 'top-bar__lang-btn--active glass-btn--lang-active' : ''}`}
               onClick={() => setLang('EN')}
             >
               🇬🇧 EN
-            </button>
+            </GlassButton>
             <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
-            <button
+            <GlassButton
               type="button"
-              className={`top-bar__lang-btn ${lang === 'TR' ? 'top-bar__lang-btn--active' : ''}`}
+              variant="lang"
+              className={`top-bar__lang-btn ${lang === 'TR' ? 'top-bar__lang-btn--active glass-btn--lang-active' : ''}`}
               onClick={() => setLang('TR')}
             >
               🇹🇷 TR
-            </button>
+            </GlassButton>
           </div>
         </div>
       </div>
 
       <header className={`header ${scrolled ? 'header--scrolled' : ''}`}>
-        <div className="container header__inner">
+        <div className="header__shell">
           <motion.a
             href="#home"
             className="header__logo"
@@ -76,46 +79,49 @@ export default function Header() {
             <img src="/assets/logo.png" alt="Admission Turkey" loading="eager" />
           </motion.a>
 
-          <nav className="header__nav">
-            {navLinks.map((link, i) => (
-              <span key={link.label} className="header__nav-item">
-                {i > 0 && <span className="header__nav-divider">|</span>}
-                <a href={link.href}>{link.label}</a>
-              </span>
-            ))}
-          </nav>
+          <div className="header__inner">
+            <nav className="header__nav">
+              {navLinks.map((link, i) => (
+                <span key={link.label} className="header__nav-item">
+                  {i > 0 && <span className="header__nav-divider">|</span>}
+                  <a href={link.href}>{link.label}</a>
+                </span>
+              ))}
+            </nav>
 
-          <motion.button
+            <button
+              className={`header__burger ${menuOpen ? 'header__burger--open' : ''}`}
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
+              aria-controls="site-mobile-menu"
+              aria-expanded={menuOpen}
+            >
+              <span /><span /><span />
+            </button>
+          </div>
+
+          <GlassButton
             type="button"
-            className="btn header__cta-whatsapp"
+            variant="whatsapp"
+            className="header__cta-whatsapp"
             onClick={handleWhatsAppChat}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
           >
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
               <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 001.333 4.99L2 22l5.233-1.371a9.943 9.943 0 004.777 1.218h.005c5.505 0 9.99-4.478 9.99-9.985C22.007 6.478 17.519 2 12.012 2zm0 18.29h-.004a8.27 8.27 0 01-4.22-1.164l-.303-.18-3.141.823.839-3.059-.197-.314a8.275 8.275 0 01-1.267-4.41c.001-4.566 3.722-8.282 8.293-8.282 2.214 0 4.295.862 5.86 2.43a8.23 8.23 0 012.427 5.858c-.002 4.568-3.724 8.288-8.286 8.288z" />
             </svg>
             Chat with Our Team
-          </motion.button>
-
-          <button
-            className={`header__burger ${menuOpen ? 'header__burger--open' : ''}`}
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            <span /><span /><span />
-          </button>
+          </GlassButton>
         </div>
 
         <AnimatePresence>
           {menuOpen && (
             <motion.div
+              id="site-mobile-menu"
               className="header__mobile-menu"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, x: 28 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 28 }}
+              transition={{ duration: 0.25 }}
             >
               {navLinks.map((link, i) => (
                 <motion.a
@@ -129,17 +135,18 @@ export default function Header() {
                   {link.label}
                 </motion.a>
               ))}
-              <button
+              <GlassButton
                 type="button"
-                className="btn header__cta-whatsapp"
+                variant="whatsapp"
+                className="header__cta-whatsapp"
                 onClick={() => { setMenuOpen(false); handleWhatsAppChat(); }}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}
+                style={{ marginTop: '12px' }}
               >
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                   <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 001.333 4.99L2 22l5.233-1.371a9.943 9.943 0 004.777 1.218h.005c5.505 0 9.99-4.478 9.99-9.985C22.007 6.478 17.519 2 12.012 2zm0 18.29h-.004a8.27 8.27 0 01-4.22-1.164l-.303-.18-3.141.823.839-3.059-.197-.314a8.275 8.275 0 01-1.267-4.41c.001-4.566 3.722-8.282 8.293-8.282 2.214 0 4.295.862 5.86 2.43a8.23 8.23 0 012.427 5.858c-.002 4.568-3.724 8.288-8.286 8.288z" />
                 </svg>
                 Chat with Our Team
-              </button>
+              </GlassButton>
             </motion.div>
           )}
         </AnimatePresence>

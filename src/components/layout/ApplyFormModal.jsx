@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApplyForm } from '../../context/ApplyFormContext.jsx';
 import { buildApplicationMessage, buildWhatsAppUrl } from '../../utils/whatsapp';
+import GlassButton from '../ui/GlassButton.jsx';
 
 const initialForm = {
   fullName: '',
@@ -121,15 +122,9 @@ export default function ApplyFormModal() {
                   sent to WhatsApp. Please tap <strong>Send</strong> in the WhatsApp chat to
                   complete your submission. Our team will contact you shortly.
                 </p>
-                <motion.button
-                  type="button"
-                  className="btn btn--orange"
-                  onClick={handleClose}
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
-                >
+                <GlassButton type="button" variant="orange" onClick={handleClose}>
                   Close
-                </motion.button>
+                </GlassButton>
               </motion.div>
             ) : (
               <>
@@ -248,15 +243,14 @@ export default function ApplyFormModal() {
                     />
                   </div>
 
-                  <motion.button
+                  <GlassButton
                     type="submit"
-                    className="btn btn--orange apply-modal__submit"
+                    variant="orange"
+                    className="apply-modal__submit"
                     disabled={submitting}
-                    whileHover={{ scale: submitting ? 1 : 1.03 }}
-                    whileTap={{ scale: submitting ? 1 : 0.97 }}
                   >
                     {submitting ? 'Opening WhatsApp...' : 'Submit via WhatsApp'}
-                  </motion.button>
+                  </GlassButton>
                 </form>
               </>
             )}

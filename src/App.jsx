@@ -26,7 +26,7 @@ function App() {
       {loading && <Loader onComplete={() => setLoading(false)} />}
       <ApplyFormModal />
       <Header />
-      <main>
+      <main className="site-main">
         {/* Page 1 Sections */}
         <Hero />
         <SearchSection />

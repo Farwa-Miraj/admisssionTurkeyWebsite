@@ -1,94 +1,224 @@
-import { motion } from 'framer-motion';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
 import AnimatedSection from '../ui/AnimatedSection.jsx';
-import { useApplyForm } from '../../context/ApplyFormContext.jsx';
-import { buildWhatsAppUrl } from '../../utils/whatsapp';
 
 const steps = [
   {
     num: '01',
     title: 'Free Consultation',
-    desc: 'We analyze your academic background, financial budget, and career goals to outline your best pathways.',
-    accent: '#fdd835', // Yellow
+    desc: 'We analyze your academic background, budget, and career goals to outline your best pathways.',
+    accent: '#fdd835',
     rotate: -5,
   },
   {
     num: '02',
     title: 'Program/University Selection',
-    desc: 'We present a tailored list of top public and foundation universities offering your chosen program.',
-    accent: '#2196f3', // Blue
+    desc: 'We present a tailored list of top public and foundation universities for your program.',
+    accent: '#42a5f5',
     rotate: 4,
   },
   {
     num: '03',
     title: 'Documents Preparation',
-    desc: 'Our sworn translators translate and notarize all school transcripts, passports, and certifications.',
-    accent: '#9c27b0', // Purple
+    desc: 'Our sworn translators translate and notarize transcripts, passports, and certifications.',
+    accent: '#ab47bc',
     rotate: -4,
   },
   {
     num: '04',
     title: 'Application & Offer Letter',
-    desc: 'We submit application details directly and secure your conditional acceptance letter in 3-5 working days.',
-    accent: '#ff9800', // Orange
+    desc: 'We submit applications and secure your conditional acceptance letter in 3–5 working days.',
+    accent: '#fdd835',
     rotate: 3,
   },
   {
     num: '05',
     title: 'Acceptance & Visa Processing',
-    desc: 'We assist with university fee deposit transfers and prepare your complete student visa dossier.',
-    accent: '#4caf50', // Green
+    desc: 'We assist with fee deposits and prepare your complete student visa dossier.',
+    accent: '#42a5f5',
     rotate: -3,
   },
   {
     num: '06',
     title: 'Pre-Departure & Arrival Support',
-    desc: 'On-ground assistance including airport pick-up, local student hostel booking, and university registration.',
-    accent: '#3f51b5', // Indigo
+    desc: 'Airport pick-up, hostel booking, and university registration on the ground.',
+    accent: '#ab47bc',
     rotate: 4,
   },
   {
     num: '07',
     title: 'Start Studying',
-    desc: 'Attend orientation, complete your equivalence (Denklik) registration, and begin your study classes!',
-    accent: '#ef5350', // Red/Pink
+    desc: 'Attend orientation, complete Denklik registration, and begin your classes.',
+    accent: '#fdd835',
     rotate: -5,
   },
 ];
 
-function Pushpin() {
+const PIN_DURATION = 0.38;
+const CARD_OFFSET = 0.14;
+const LINE_DURATION = 0.55;
+const SEGMENT_GAP = 0.1;
+const CONNECTOR_DASH_COUNT = 13;
+
+function getSegmentStart(index) {
+  if (index === 0) return 0;
+  return getSegmentStart(index - 1) + PIN_DURATION + CARD_OFFSET + LINE_DURATION + SEGMENT_GAP;
+}
+
+function Pushpin({ id }) {
+  const headGrad = `pushpin-head-${id}`;
+  const baseGrad = `pushpin-base-${id}`;
+
   return (
-    <svg viewBox="0 0 100 100" width="34" height="34" className="sticky-note__pushpin" aria-hidden="true">
-      {/* Shadow */}
-      <ellipse cx="47" cy="74" rx="7" ry="2.5" fill="rgba(0,0,0,0.18)" />
-      {/* Metallic Pin */}
-      <path d="M 50 48 L 47 74 L 53 74 Z" fill="#b0bec5" stroke="#78909c" strokeWidth="0.8" />
-      {/* Blue Plastic Head */}
-      <path
-        d="M 36 28 C 36 23, 64 23, 64 28 L 59 44 C 67 44, 67 48, 59 48 L 41 48 C 33 48, 33 44, 41 44 Z"
-        fill="url(#blue-pushpin-gradient)"
-        stroke="#0d47a1"
-        strokeWidth="1.2"
-      />
-      {/* Glass Highlight */}
-      <ellipse cx="46" cy="30" rx="5" ry="2.2" fill="rgba(255,255,255,0.4)" />
+    <svg viewBox="0 0 60 28" width="28" height="13" className="sticky-note__pushpin" aria-hidden="true">
       <defs>
-        <radialGradient id="blue-pushpin-gradient" cx="45%" cy="35%" r="60%">
-          <stop offset="0%" stopColor="#42a5f5" />
-          <stop offset="50%" stopColor="#1e88e5" />
-          <stop offset="100%" stopColor="#0d47a1" />
+        <radialGradient id={headGrad} cx="38%" cy="32%" r="68%">
+          <stop offset="0%" stopColor="#90caf9" />
+          <stop offset="45%" stopColor="#42a5f5" />
+          <stop offset="100%" stopColor="#1565c0" />
         </radialGradient>
+        <linearGradient id={baseGrad} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#2196f3" />
+          <stop offset="100%" stopColor="#0d47a1" />
+        </linearGradient>
       </defs>
+
+      <ellipse cx="36" cy="25" rx="10" ry="1.6" fill="rgba(0,0,0,0.16)" />
+      <rect x="4" y="12.2" width="15" height="1.8" rx="0.9" fill="#b0bec5" />
+      <path d="M 2 13.1 L 7.5 10.6 L 7.5 15.6 Z" fill="#eceff1" stroke="#90a4ae" strokeWidth="0.35" />
+      <path
+        d="M 18.5 20.2 L 41.5 20.2 L 39.8 25.2 L 20.2 25.2 Z"
+        fill={`url(#${baseGrad})`}
+        stroke="#0d47a1"
+        strokeWidth="0.55"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M 18.5 20.2 C 17.2 20.2 16.2 18.8 16.5 16.2 C 17 10.5 21 6.2 28.5 5.2 C 36.5 4 41.5 7.5 42.5 12.8 C 43.2 17.2 42.2 19.8 41.5 20.2 Z"
+        fill={`url(#${headGrad})`}
+        stroke="#1565c0"
+        strokeWidth="0.75"
+        strokeLinejoin="round"
+      />
+      <ellipse cx="29" cy="9.5" rx="8" ry="3.8" fill="rgba(255,255,255,0.48)" />
+      <ellipse cx="26" cy="8.2" rx="3.2" ry="1.4" fill="rgba(255,255,255,0.62)" />
     </svg>
   );
 }
 
-export default function OurProcess() {
-  const { openApplyForm } = useApplyForm();
+function CurvedConnector({ index, isActive, fromLeft }) {
+  const pathRef = useRef(null);
+  const [pathLen, setPathLen] = useState(0);
+  const baseDelay = getSegmentStart(index) + PIN_DURATION + CARD_OFFSET;
+  const pathD = fromLeft
+    ? 'M 22 6 C 38 18, 62 48, 78 74'
+    : 'M 78 6 C 62 18, 38 48, 22 74';
 
-  const handleBookCall = () => {
-    const message = "Hello! I am planning my studies in Turkey and would like to book a consultation call.";
-    window.open(buildWhatsAppUrl(message), '_blank', 'noopener,noreferrer');
-  };
+  useLayoutEffect(() => {
+    if (pathRef.current) {
+      setPathLen(pathRef.current.getTotalLength());
+    }
+  }, [pathD]);
+
+  const hiddenOffset = pathLen || 1;
+  const dashSegment = pathLen > 0 ? pathLen / (CONNECTOR_DASH_COUNT * 2) : 0;
+  const strokeDasharray = dashSegment > 0 ? `${dashSegment} ${dashSegment}` : undefined;
+
+  return (
+    <div
+      className={`sticky-connector sticky-connector--vertical ${fromLeft ? 'sticky-connector--to-right' : 'sticky-connector--to-left'}`}
+      aria-hidden="true"
+    >
+      <svg className="sticky-connector__svg" viewBox="0 0 100 80" preserveAspectRatio="none">
+        <motion.path
+          ref={pathRef}
+          className="sticky-connector__path"
+          d={pathD}
+          fill="none"
+          strokeDasharray={strokeDasharray}
+          initial={{ strokeDashoffset: hiddenOffset, opacity: 0 }}
+          animate={
+            isActive
+              ? { strokeDashoffset: 0, opacity: pathLen > 0 ? 1 : 0 }
+              : { strokeDashoffset: hiddenOffset, opacity: 0 }
+          }
+          transition={{ delay: baseDelay, duration: LINE_DURATION, ease: 'easeInOut' }}
+        />
+      </svg>
+    </div>
+  );
+}
+
+function StickyNote({ step, index, isActive, isLeft }) {
+  const noteDelay = getSegmentStart(index);
+
+  return (
+    <motion.div
+      className={`sticky-note-card-wrapper ${isLeft ? 'sticky-note-card-wrapper--left' : 'sticky-note-card-wrapper--right'}`}
+      initial={{ opacity: 0 }}
+      animate={isActive ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ delay: noteDelay, duration: 0.01 }}
+    >
+      <motion.div
+        className="sticky-note-card"
+        style={{
+          '--note-accent': step.accent,
+          rotate: step.rotate,
+        }}
+        initial={{ scale: 0.9, y: -16, opacity: 0 }}
+        animate={
+          isActive
+            ? { scale: 1, y: 0, opacity: 1, rotate: step.rotate }
+            : { scale: 0.9, y: -16, opacity: 0, rotate: step.rotate }
+        }
+        transition={{
+          delay: noteDelay + CARD_OFFSET,
+          duration: 0.45,
+          type: 'spring',
+          stiffness: 340,
+          damping: 22,
+        }}
+      >
+        <div className="sticky-note-pin-wrap">
+          <motion.div
+            className="sticky-note-pin-motion"
+            initial={{ y: -24, opacity: 0, scale: 0.55 }}
+            animate={
+              isActive
+                ? { y: 0, opacity: 1, scale: 1 }
+                : { y: -24, opacity: 0, scale: 0.55 }
+            }
+            transition={{
+              delay: noteDelay,
+              duration: PIN_DURATION,
+              type: 'spring',
+              stiffness: 520,
+              damping: 16,
+            }}
+          >
+            <Pushpin id={step.num} />
+          </motion.div>
+        </div>
+
+        <div className="sticky-note-card__wash" aria-hidden="true" />
+
+        <div className="sticky-note-card__content">
+          <div className="sticky-note-card__head">
+            <span className="sticky-note-card__num" style={{ color: step.accent }}>
+              {step.num}
+            </span>
+            <h4 className="sticky-note-card__title">{step.title}</h4>
+          </div>
+          <p className="sticky-note-card__desc">{step.desc}</p>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export default function OurProcess() {
+  const boardRef = useRef(null);
+  const isActive = useInView(boardRef, { once: true, amount: 0.15 });
 
   return (
     <section id="process" className="sticky-timeline-section">
@@ -100,92 +230,23 @@ export default function OurProcess() {
           </p>
         </AnimatedSection>
 
-        {/* Timeline wrapper with graph paper background */}
-        <div className="sticky-timeline-board">
-          
-          {/* Curved Connector SVG Path for Desktop (Alternating Columns) */}
-          <svg className="sticky-timeline-board__svg" viewBox="0 0 1000 1350" preserveAspectRatio="none" aria-hidden="true">
-            <path
-              className="sticky-timeline-board__dashed-line"
-              d="
-                M 320 130
-                C 420 130, 470 140, 520 210
-                S 600 340, 540 420
-                S 460 520, 520 600
-                S 620 720, 540 800
-                S 430 880, 520 960
-                S 620 1040, 520 1120
-              "
-            />
-          </svg>
-
-          {/* Staggered Sticky Notes List */}
-          <div className="sticky-notes-container">
+        <div className="sticky-timeline-board sticky-timeline-board--vertical" ref={boardRef}>
+          <div className="sticky-notes-track sticky-notes-track--vertical">
             {steps.map((step, idx) => {
-              const isRight = idx % 2 === 1;
-              const wrapperStyle = {
-                gridRow: idx + 1,
-              };
+              const isLeft = idx % 2 === 0;
 
               return (
-                <motion.div
-                  key={step.num}
-                  className={`sticky-note-card-wrapper ${isRight ? 'sticky-note-card-wrapper--right' : 'sticky-note-card-wrapper--left'}`}
-                  style={wrapperStyle}
-                  initial={{ opacity: 0, y: 60, rotate: step.rotate - 8 }}
-                  whileInView={{ opacity: 1, y: 0, rotate: step.rotate }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, type: 'spring', bounce: 0.3 }}
-                >
-                  <div 
-                    className="sticky-note-card"
-                    style={{ borderBottom: `8px solid ${step.accent}` }}
-                  >
-                    <Pushpin />
-                    <div className="sticky-note-card__content">
-                      <span className="sticky-note-card__label" style={{ color: step.accent }}>
-                        {step.num}
-                      </span>
-                      <h4 className="sticky-note-card__title">{step.title}</h4>
-                      <p className="sticky-note-card__desc">{step.desc}</p>
-                    </div>
-                  </div>
-                </motion.div>
+                <div key={step.num} className="sticky-notes-segment sticky-notes-segment--vertical">
+                  <StickyNote step={step} index={idx} isActive={isActive} isLeft={isLeft} />
+                  {idx < steps.length - 1 && (
+                    <CurvedConnector index={idx} isActive={isActive} fromLeft={isLeft} />
+                  )}
+                </div>
               );
             })}
           </div>
-
         </div>
-
-        {/* Center Bottom CTA Card */}
-        <AnimatedSection className="sticky-timeline-cta-wrap">
-          <div className="sticky-timeline-cta">
-            <Pushpin />
-            <h3 className="sticky-timeline-cta__title">Not sure where to start?</h3>
-            <p className="sticky-timeline-cta__desc">
-              Don’t get overwhelmed by complex admissions details. Speak to our lead admissions advisor directly.
-            </p>
-            <div className="sticky-timeline-cta__actions">
-              <button type="button" className="btn btn--orange" onClick={openApplyForm}>
-                Apply for Admission
-              </button>
-              <button
-                type="button"
-                className="btn btn--outline-white"
-                onClick={handleBookCall}
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-              >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                </svg>
-                Book a Consultation Call
-              </button>
-            </div>
-          </div>
-        </AnimatedSection>
       </div>
     </section>
   );
 }
-
-

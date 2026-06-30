@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApplyForm } from '../../context/ApplyFormContext.jsx';
 import { buildWhatsAppUrl } from '../../utils/whatsapp';
+import GlassButton from '../ui/GlassButton.jsx';
 
 const trustFactors = [
   { value: '1000+', label: 'students placed' },
@@ -95,28 +96,23 @@ export default function Hero() {
             </p>
 
             <div className="hero__buttons">
-              <motion.button
-                type="button"
-                className="btn btn--orange btn--lg hero__btn-primary"
+              <GlassButton
+                variant="orange"
+                className="hero__btn-primary"
                 onClick={openApplyForm}
-                whileHover={{ scale: 1.04, boxShadow: '0 12px 35px rgba(239, 125, 0, 0.4)' }}
-                whileTap={{ scale: 0.97 }}
               >
                 Apply for admission &rarr;
-              </motion.button>
-              <motion.button
-                type="button"
-                className="btn btn--outline-navy btn--lg hero__btn-secondary"
+              </GlassButton>
+              <GlassButton
+                variant="outline-navy"
+                className="hero__btn-secondary"
                 onClick={handleTalkToAdvisor}
-                whileHover={{ scale: 1.04, backgroundColor: 'rgba(0, 0, 102, 0.03)' }}
-                whileTap={{ scale: 0.97 }}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
               >
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                   <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 001.333 4.99L2 22l5.233-1.371a9.943 9.943 0 004.777 1.218h.005c5.505 0 9.99-4.478 9.99-9.985C22.007 6.478 17.519 2 12.012 2zm0 18.29h-.004a8.27 8.27 0 01-4.22-1.164l-.303-.18-3.141.823.839-3.059-.197-.314a8.275 8.275 0 01-1.267-4.41c.001-4.566 3.722-8.282 8.293-8.282 2.214 0 4.295.862 5.86 2.43a8.23 8.23 0 012.427 5.858c-.002 4.568-3.724 8.288-8.286 8.288z" />
                 </svg>
                 Talk to an advisor
-              </motion.button>
+              </GlassButton>
             </div>
           </motion.div>
 
@@ -171,71 +167,66 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* 3 Large Staggered Stat Cards */}
+        {/* 3 Staggered Stat Cards */}
         <div className="hero__stat-cards">
           {/* Card 1: Orange */}
           <motion.div
             className="hero__stat-card hero__stat-card--orange"
+            tabIndex={0}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            whileHover={{ y: -6 }}
+            whileHover={{ y: -8, rotate: -1.5, scale: 1.04 }}
+            whileFocus={{ y: -8, rotate: -1.5, scale: 1.04 }}
           >
             <div className="hero__stat-card-badge">PLACEMENT</div>
             <div className="hero__stat-card-value">1,000+</div>
             <div className="hero__stat-card-label">students placed</div>
-            <p className="hero__stat-card-desc">
-              Successfully admitted and enrolled at top Turkish universities since 2018.
-            </p>
           </motion.div>
 
           {/* Card 2: Navy */}
           <motion.div
             className="hero__stat-card hero__stat-card--navy"
+            tabIndex={0}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            whileHover={{ y: -6 }}
+            whileHover={{ y: -9, rotate: 1.5, scale: 1.04 }}
+            whileFocus={{ y: -9, rotate: 1.5, scale: 1.04 }}
           >
             <div className="hero__stat-card-badge">VISA SUCCESS</div>
             <div className="hero__stat-card-value">97%</div>
             <div className="hero__stat-card-label">Visa Success Ratio</div>
-            <p className="hero__stat-card-desc">
-              High visa approval rate thanks to our detailed file curation and preparation.
-            </p>
           </motion.div>
 
           {/* Card 3: Light Gray */}
           <motion.div
             className="hero__stat-card hero__stat-card--gray"
+            tabIndex={0}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            whileHover={{ y: -6 }}
+            whileHover={{ y: -8, rotate: -1, scale: 1.04 }}
+            whileFocus={{ y: -8, rotate: -1, scale: 1.04 }}
           >
             <div className="hero__stat-card-badge">GLOBAL NETWORK</div>
             <div className="hero__stat-card-value">80+</div>
             <div className="hero__stat-card-label">B2B Partners</div>
-            <p className="hero__stat-card-desc">
-              Cooperating with agents and consultants globally to serve students.
-            </p>
           </motion.div>
         </div>
 
         {/* Small Horizontal Stats Row */}
-        <div className="hero__small-stats-bar">
-          <div className="hero__small-stats-inner">
-            {trustFactors.map((f, i) => (
-              <span key={f.label} className="hero__small-stats-item">
-                {i > 0 && <span className="hero__small-stats-divider">|</span>}
-                <strong>{f.value}</strong> {f.label}
-              </span>
-            ))}
-          </div>
-        </div>
+        <ul className="hero__small-stats-bar" aria-label="Admission Turkey highlights">
+          {trustFactors.map((factor) => (
+            <li key={factor.label} className="hero__small-stats-item">
+              <strong>{factor.value}</strong>
+              <span>{factor.label}</span>
+            </li>
+          ))}
+        </ul>
 
       </div>
     </section>

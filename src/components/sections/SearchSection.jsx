@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedSection from '../ui/AnimatedSection.jsx';
+import GlassButton from '../ui/GlassButton.jsx';
 
 const levels = ["Bachelor's", "Master's", 'Associate', 'PhD / Doctorate', 'Language Course'];
 const languages = ['English', 'Turkish'];
@@ -103,9 +104,9 @@ export default function SearchSection() {
               <span>Show Programs with Scholarships Available</span>
             </label>
 
-            <button type="button" className="filter-clear-btn" onClick={handleClear}>
+            <GlassButton type="button" variant="clear" className="filter-clear-btn" onClick={handleClear}>
               Clear Filters
-            </button>
+            </GlassButton>
           </div>
         </AnimatedSection>
       </div>
