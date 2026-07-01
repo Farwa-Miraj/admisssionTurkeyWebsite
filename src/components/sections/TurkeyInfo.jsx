@@ -116,7 +116,7 @@ export default function TurkeyInfo() {
       <div className="container turkey-info__grid">
         <AnimatedSection direction="left">
           <div className="turkey-info__top-area">
-            <h2 className="turkey-info__title">
+            <h2 className="turkey-info__title section-heading">
               Why choose Turkey for higher education?
             </h2>
             <p className="turkey-info__intro">

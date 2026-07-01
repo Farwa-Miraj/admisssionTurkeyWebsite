@@ -34,7 +34,7 @@ export default function SearchSection() {
     <section id="programs" className="search-section">
       <div className="container">
         <AnimatedSection className="search-section__title">
-          <h2 style={{ fontSize: '2rem', fontWeight: 800 }}>Find Your Ideal Program</h2>
+          <h2 className="section-heading">Find Your Ideal Program</h2>
           <p style={{ color: 'var(--gray-text)', marginTop: '8px' }}>
             Filter through hundreds of courses and find the perfect match for your academic future.
           </p>

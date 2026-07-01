@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const THREAD_PATHS = [
-  'M500 300 C350 300 300 120 170 120',
-  'M500 300 C300 300 250 330 120 330',
-  'M500 300 C350 300 300 540 170 540',
-  'M500 300 C650 300 700 120 830 120',
-  'M500 300 C700 300 750 330 880 330',
-  'M500 300 C650 300 700 540 830 540',
+  'M500 300 C380 300 320 120 240 120',
+  'M500 300 C380 300 320 330 200 330',
+  'M500 300 C380 300 320 540 240 540',
+  'M500 300 C620 300 680 120 760 120',
+  'M500 300 C620 300 680 330 800 330',
+  'M500 300 C620 300 680 540 760 540',
 ];
 
 const bubbles = [
@@ -16,7 +16,7 @@ const bubbles = [
     title: 'Fast Admission Process',
     desc: 'Get your offer letter in 3-5 working days with our direct admissions channel.',
     color: '#2196f3',
-    lineEnd: { x: 17, y: 20 },
+    lineEnd: { x: 24, y: 20 },
     side: 'left',
     icon: (
       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -29,7 +29,7 @@ const bubbles = [
     title: 'Licensed & Registered',
     desc: 'Officially authorized government-registered agency partnering with top Turkish universities.',
     color: '#4caf50',
-    lineEnd: { x: 12, y: 55 },
+    lineEnd: { x: 20, y: 55 },
     side: 'left',
     icon: (
       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -42,7 +42,7 @@ const bubbles = [
     title: 'End-to-End Student Support',
     desc: 'From airport pick-up and hostel booking to local equivalence certificates.',
     color: '#e91e63',
-    lineEnd: { x: 17, y: 90 },
+    lineEnd: { x: 24, y: 90 },
     side: 'left',
     icon: (
       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -55,7 +55,7 @@ const bubbles = [
     title: 'Experienced Team',
     desc: 'Multilingual counselors who have successfully placed thousands of students since 2018.',
     color: '#ff9800',
-    lineEnd: { x: 83, y: 20 },
+    lineEnd: { x: 76, y: 20 },
     side: 'right',
     icon: (
       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -68,7 +68,7 @@ const bubbles = [
     title: 'Based in Turkey',
     desc: 'Headquartered in Istanbul, providing direct local on-ground support whenever you need it.',
     color: '#3f51b5',
-    lineEnd: { x: 88, y: 55 },
+    lineEnd: { x: 80, y: 55 },
     side: 'right',
     icon: (
       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -81,7 +81,7 @@ const bubbles = [
     title: 'Serving Globally',
     desc: 'Trusted by students from over 28 countries across South Asia, Middle East, and Africa.',
     color: '#9c27b0',
-    lineEnd: { x: 83, y: 90 },
+    lineEnd: { x: 76, y: 90 },
     side: 'right',
     icon: (
       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -112,9 +112,9 @@ export default function WhyChooseUs() {
         viewport={{ once: true }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        <h2 className="titan-header__title">
+        <h2 className="titan-header__title section-heading">
           Why do international students choose{' '}
-          <span className="titan-header__highlight">Admission Turkey?</span>
+          <span className="section-heading__accent">Admission Turkey?</span>
         </h2>
       </motion.div>
 

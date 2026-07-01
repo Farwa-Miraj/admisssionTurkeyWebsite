@@ -224,7 +224,7 @@ export default function OurProcess() {
     <section id="process" className="sticky-timeline-section">
       <div className="container">
         <AnimatedSection className="sticky-timeline-section__title">
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--navy)' }}>How It Works</h2>
+          <h2 className="section-heading">How It Works</h2>
           <p style={{ color: 'var(--gray-text)', marginTop: '8px', maxWidth: '600px', margin: '8px auto 0' }}>
             A transparent, step-by-step guidance process from initial contact to your first day of class in Turkey.
           </p>

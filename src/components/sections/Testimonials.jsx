@@ -81,9 +81,7 @@ export default function Testimonials() {
     <section id="testimonials" className="reviews-section">
       <div className="container">
         <AnimatedSection className="reviews-section__title">
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--navy)' }}>
-            What Our Students Say
-          </h2>
+          <h2 className="section-heading">What Our Students Say</h2>
           <p style={{ color: 'var(--gray-text)', marginTop: '8px' }}>
             Hear from some of the thousands of international students we’ve helped place in Turkey.
           </p>

@@ -33,7 +33,7 @@ export default function UnlockSuccess() {
     <section id="about" className="unlock">
       <div className="container unlock__inner">
         <AnimatedSection className="unlock__left" direction="left">
-          <h2 className="unlock__title">
+          <h2 className="unlock__title section-heading">
             Unlocking Your Success Route With Ranked Universities
           </h2>
           <div className="unlock__image-wrap">

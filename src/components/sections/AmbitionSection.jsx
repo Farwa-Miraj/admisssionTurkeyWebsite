@@ -12,8 +12,8 @@ export default function AmbitionSection() {
     <section className="ambition">
       <div className="container ambition__inner">
         <AnimatedSection className="ambition__content" direction="left">
-          <h2 className="ambition__title">
-            When Ambition Meets <span className="ambition__highlight">Opportunity</span>, Anything is Possible
+          <h2 className="ambition__title section-heading">
+            When Ambition Meets <span className="section-heading__accent">Opportunity</span>, Anything is Possible
           </h2>
           <div className="ambition__text-block">
             <span className="ambition__line" />

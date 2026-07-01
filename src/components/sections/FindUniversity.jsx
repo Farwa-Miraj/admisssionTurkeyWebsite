@@ -61,7 +61,7 @@ export default function FindUniversity() {
     <section id="universities" className="universities-section">
       <div className="container">
         <AnimatedSection className="universities-section__title">
-          <h2 className="universities-section__heading">Where our students study</h2>
+          <h2 className="section-heading">Where our students study</h2>
           <p className="universities-section__subtitle">
             Hand-picked institutions across Türkiye - from world-renowned public universities to specialized private faculties with full English instruction.
           </p>

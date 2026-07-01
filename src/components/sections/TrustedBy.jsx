@@ -17,7 +17,7 @@ export default function TrustedBy() {
       <div className="container hp-uni-head">
         <div>
           <span className="hp-eyebrow hp-uni-eyebrow">Partners</span>
-          <h2>Trusted by leading universities</h2>
+          <h2 className="section-heading">Trusted by leading universities</h2>
         </div>
         <GlassButton type="button" variant="outline-hp" className="hp-uni-btn">
           View all partners

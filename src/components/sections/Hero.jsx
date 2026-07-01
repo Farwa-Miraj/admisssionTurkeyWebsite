@@ -20,17 +20,10 @@ const floatingUniList = [
   'Istanbul University • Law',
 ];
 
-const heroHeadlineLines = [
-  'in weeks, not months.',
-  'with fast visa support.',
-  'with expert admissions guidance.',
-];
-
 export default function Hero() {
   const { openApplyForm } = useApplyForm();
   const [isPlaying, setIsPlaying] = useState(false);
   const [uniIndex, setUniIndex] = useState(0);
-  const [headlineIndex, setHeadlineIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -39,20 +32,13 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const headlineInterval = setInterval(() => {
-      setHeadlineIndex((prev) => (prev + 1) % heroHeadlineLines.length);
-    }, 3200);
-    return () => clearInterval(headlineInterval);
-  }, []);
-
   const handleTalkToAdvisor = () => {
     const message = "Hi! I am interested in studying in Turkey. Please connect me with an advisor.";
     window.open(buildWhatsAppUrl(message), '_blank', 'noopener,noreferrer');
   };
 
   return (
-    <section id="home" className="hero" style={{ padding: '160px 0 60px' }}>
+    <section id="home" className="hero">
       <div className="container">
         
         {/* Main Grid: Left Column Info, Right Column Video */}
@@ -75,18 +61,7 @@ export default function Hero() {
               <br />
               <span className="hero__title-navy">Turkish university —</span>
               <br />
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={headlineIndex}
-                  className="hero__title-orange-italic hero__title-animated"
-                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -8, scale: 0.98 }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {heroHeadlineLines[headlineIndex]}
-                </motion.span>
-              </AnimatePresence>
+              <span className="hero__title-accent">in weeks, not months.</span>
             </h1>
 
             <p className="hero__subtitle">
@@ -97,18 +72,20 @@ export default function Hero() {
 
             <div className="hero__buttons">
               <GlassButton
+                type="button"
                 variant="orange"
-                className="hero__btn-primary"
+                className="hero__btn"
                 onClick={openApplyForm}
               >
                 Apply for admission &rarr;
               </GlassButton>
               <GlassButton
-                variant="outline-navy"
-                className="hero__btn-secondary"
+                type="button"
+                variant="ghost"
+                className="hero__btn hero__btn--ghost"
                 onClick={handleTalkToAdvisor}
               >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
                   <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 001.333 4.99L2 22l5.233-1.371a9.943 9.943 0 004.777 1.218h.005c5.505 0 9.99-4.478 9.99-9.985C22.007 6.478 17.519 2 12.012 2zm0 18.29h-.004a8.27 8.27 0 01-4.22-1.164l-.303-.18-3.141.823.839-3.059-.197-.314a8.275 8.275 0 01-1.267-4.41c.001-4.566 3.722-8.282 8.293-8.282 2.214 0 4.295.862 5.86 2.43a8.23 8.23 0 012.427 5.858c-.002 4.568-3.724 8.288-8.286 8.288z" />
                 </svg>
                 Talk to an advisor

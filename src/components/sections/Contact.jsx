@@ -8,7 +8,7 @@ export default function Contact() {
         <img src="/assets/contact-bg.jpg" alt="" className="contact__header-bg" loading="lazy" />
         <div className="contact__header-overlay">
           <AnimatedSection>
-            <h2 className="contact__title">Contact Us</h2>
+            <h2 className="contact__title section-heading">Contact Us</h2>
             <p className="contact__subtitle">
               Don&apos;t wait to build your future. Contact us now for a free consultation
             </p>

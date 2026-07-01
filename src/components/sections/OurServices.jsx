@@ -83,7 +83,7 @@ export default function OurServices() {
     <section id="services" className="services-section">
       <div className="container">
         <AnimatedSection className="services-section__title">
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--navy)' }}>Our Services</h2>
+          <h2 className="section-heading">Our Services</h2>
           <p style={{ color: 'var(--gray-text)', marginTop: '8px' }}>
             Comprehensive on-ground and online support for your entire academic journey in Turkey.
           </p>
