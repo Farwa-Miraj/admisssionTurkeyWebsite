@@ -2524,6 +2524,8 @@ ul {
 
   .header__shell {
     gap: 20px;
+    justify-content: center;
+
     width: min(100%, 1080px);
   }
 
@@ -2601,8 +2603,14 @@ ul {
     display: none;
   }
 
+  .header__shell {
+    justify-content: space-between;
+    width: 100%;
+  }
+
   .header__inner {
     justify-content: flex-end;
+    flex: 0 0 auto;
   }
 
   .header__shell > .header__cta-whatsapp,
@@ -2631,11 +2639,13 @@ ul {
 
   .header__shell {
     gap: 12px;
+    justify-content: space-between;
+    width: 100%;
   }
 
   .header__inner {
     flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     height: 52px;
     gap: 12px;
     padding: 0 10px 0 12px;
