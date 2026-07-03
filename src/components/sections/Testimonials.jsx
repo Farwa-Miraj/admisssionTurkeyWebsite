@@ -9,16 +9,57 @@ const CARD_GRADIENTS = [
   'linear-gradient(135deg, #ffffff 45%, #f0fffe 100%)',
 ];
 
+const CARD_ACCENTS = [
+  {
+    avatar: 'linear-gradient(135deg, #f472b6 0%, #ec4899 100%)',
+    name: 'linear-gradient(135deg, #db2777 0%, #f472b6 100%)',
+  },
+  {
+    avatar: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+    name: 'linear-gradient(135deg, #2563eb 0%, #60a5fa 100%)',
+  },
+  {
+    avatar: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)',
+    name: 'linear-gradient(135deg, #16a34a 0%, #4ade80 100%)',
+  },
+  {
+    avatar: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)',
+    name: 'linear-gradient(135deg, #ea580c 0%, #fb923c 100%)',
+  },
+  {
+    avatar: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
+    name: 'linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)',
+  },
+  {
+    avatar: 'linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%)',
+    name: 'linear-gradient(135deg, #0d9488 0%, #2dd4bf 100%)',
+  },
+];
+
+const REPEATS_PER_HALF = 5;
+
+function buildMarqueeTrack(items) {
+  const half = Array.from({ length: REPEATS_PER_HALF }, () => items).flat();
+  return [...half, ...half];
+}
+
 function ReviewCard({ testimonial, gradientIndex }) {
+  const accentIndex = gradientIndex % CARD_ACCENTS.length;
+  const accent = CARD_ACCENTS[accentIndex];
+
   return (
     <div
       className="review-card"
-      style={{ background: CARD_GRADIENTS[gradientIndex % CARD_GRADIENTS.length] }}
+      style={{ background: CARD_GRADIENTS[accentIndex] }}
     >
       <div className="review-card__header">
-        <div className="review-card__avatar">{testimonial.avatar}</div>
+        <div className="review-card__avatar" style={{ background: accent.avatar }}>
+          {testimonial.avatar}
+        </div>
         <div>
-          <h4 className="review-card__name">{testimonial.name}</h4>
+          <h4 className="review-card__name review-card__name--accent" style={{ backgroundImage: accent.name }}>
+            {testimonial.name}
+          </h4>
           <span className="review-card__role">{testimonial.role}</span>
         </div>
       </div>
@@ -91,9 +132,8 @@ export default function Testimonials() {
       {/* Row 1: Moves Left */}
       <div className="reviews-row">
         <div className="reviews-row__track reviews-row__track--left">
-          {/* Double the array for infinite scrolling */}
-          {[...row1, ...row1, ...row1].map((t, idx) => (
-            <ReviewCard key={idx} testimonial={t} gradientIndex={idx} />
+          {buildMarqueeTrack(row1).map((t, idx) => (
+            <ReviewCard key={`row1-${idx}`} testimonial={t} gradientIndex={idx} />
           ))}
         </div>
       </div>
@@ -101,8 +141,8 @@ export default function Testimonials() {
       {/* Row 2: Moves Right */}
       <div className="reviews-row">
         <div className="reviews-row__track reviews-row__track--right">
-          {[...row2, ...row2, ...row2].map((t, idx) => (
-            <ReviewCard key={idx} testimonial={t} gradientIndex={idx + 3} />
+          {buildMarqueeTrack(row2).map((t, idx) => (
+            <ReviewCard key={`row2-${idx}`} testimonial={t} gradientIndex={idx + 3} />
           ))}
         </div>
       </div>

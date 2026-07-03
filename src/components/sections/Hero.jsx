@@ -20,16 +20,30 @@ const floatingUniList = [
   'Istanbul University • Law',
 ];
 
+const heroHeadlineLines = [
+  'in weeks, not months.',
+  'with fast visa support.',
+  'with expert admissions guidance.',
+];
+
 export default function Hero() {
   const { openApplyForm } = useApplyForm();
   const [isPlaying, setIsPlaying] = useState(false);
   const [uniIndex, setUniIndex] = useState(0);
+  const [headlineIndex, setHeadlineIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setUniIndex((prev) => (prev + 1) % floatingUniList.length);
     }, 3000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const headlineInterval = setInterval(() => {
+      setHeadlineIndex((prev) => (prev + 1) % heroHeadlineLines.length);
+    }, 3200);
+    return () => clearInterval(headlineInterval);
   }, []);
 
   const handleTalkToAdvisor = () => {
@@ -61,7 +75,20 @@ export default function Hero() {
               <br />
               <span className="hero__title-navy">Turkish university —</span>
               <br />
-              <span className="hero__title-accent">in weeks, not months.</span>
+              <span className="hero__title-accent-wrap" aria-live="polite">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={headlineIndex}
+                    className="hero__title-accent hero__title-accent--animated"
+                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {heroHeadlineLines[headlineIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
             </h1>
 
             <p className="hero__subtitle">
@@ -101,8 +128,8 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             {/* Rotating University Tag */}
-            <div className="hero__floating-uni-wrap">
-              <AnimatePresence mode="wait">
+            <div className="hero__floating-uni-wrap" aria-live="polite">
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={uniIndex}
                   className="hero__floating-uni"
@@ -196,14 +223,14 @@ export default function Hero() {
         </div>
 
         {/* Small Horizontal Stats Row */}
-        <ul className="hero__small-stats-bar" aria-label="Admission Turkey highlights">
+        {/* <ul className="hero__small-stats-bar" aria-label="Admission Turkey highlights">
           {trustFactors.map((factor) => (
             <li key={factor.label} className="hero__small-stats-item">
               <strong>{factor.value}</strong>
               <span>{factor.label}</span>
             </li>
           ))}
-        </ul>
+        </ul> */}
 
       </div>
     </section>

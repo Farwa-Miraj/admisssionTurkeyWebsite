@@ -4,7 +4,16 @@ import GlassButton from '../ui/GlassButton.jsx';
 export default function Footer() {
   return (
     <footer className="footer-redesign">
-     
+      <motion.div
+          className="footer-redesign__bg-text"
+          aria-hidden="true"
+          initial={{ opacity: 0.18 }}
+          animate={{ opacity: 0.21 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        >
+          Admission<br />
+          TURKIYE
+        </motion.div>
       <div className="container">
         <div className="footer-redesign__main">
           {/* Footer Top Links Grid */}
@@ -114,15 +123,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <motion.div
-          className="footer-redesign__bg-text"
-          aria-hidden="true"
-          initial={{ opacity: 0.18 }}
-          animate={{ opacity: 0.21 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-        >
-          TURKIYE
-        </motion.div>
+       <div className="footer-redesign__bg-text-spacer" aria-hidden="true" />
 
         {/* Footer Bottom info */}
         <div className="footer-redesign__bottom">

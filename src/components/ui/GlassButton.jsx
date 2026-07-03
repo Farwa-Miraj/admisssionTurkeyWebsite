@@ -7,6 +7,7 @@ const BTN_BASE_VARIANTS = new Set([
   'whatsapp',
   'ghost',
   'outline-hp',
+  'nav',
   'pill',
   'navy',
   'gray',

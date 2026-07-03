@@ -162,10 +162,10 @@ export default function WhyChooseUs() {
                 <span>Your Direct Route</span>
                 <motion.div
                   className="titan-slanted-card"
-                  initial={{ opacity: 0, scale: 0.85, rotate: -8 }}
-                  whileInView={{ opacity: 1, scale: 1, rotate: -5 }}
+                  initial={{ opacity: 0, scale: 0.85, rotate: -5 }}
+                  whileInView={{ opacity: 1, scale: 1, rotate: -8 }}
                   viewport={{ once: true }}
-                  whileHover={{ scale: 1.06, rotate: -8 }}
+                  whileHover={{ scale: 1.06, rotate: -10 }}
                   transition={{ duration: 0.6, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <img

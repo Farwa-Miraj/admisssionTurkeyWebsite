@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { forwardRef, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import AnimatedSection from '../ui/AnimatedSection.jsx';
 
@@ -55,14 +55,85 @@ const steps = [
 ];
 
 const PIN_DURATION = 0.38;
-const CARD_OFFSET = 0.14;
+const CARD_PLACE_DURATION = 0.45;
 const LINE_DURATION = 0.55;
 const SEGMENT_GAP = 0.1;
-const CONNECTOR_DASH_COUNT = 13;
+const LINE_START_OFFSET_Y = 20;
+const LINE_END_OFFSET_Y = 20;
+const LINE_START_INSET_X = 18;
+const DASH_LENGTH = 2;
+const DASH_GAP = 3;
 
 function getSegmentStart(index) {
   if (index === 0) return 0;
-  return getSegmentStart(index - 1) + PIN_DURATION + CARD_OFFSET + LINE_DURATION + SEGMENT_GAP;
+  return (
+    getSegmentStart(index - 1) +
+    CARD_PLACE_DURATION +
+    PIN_DURATION +
+    LINE_DURATION +
+    SEGMENT_GAP
+  );
+}
+
+function getCardDelay(index) {
+  return getSegmentStart(index);
+}
+
+function getPinDelay(index) {
+  return getSegmentStart(index) + CARD_PLACE_DURATION;
+}
+
+function getLineSegmentDelay(index) {
+  return getSegmentStart(index) + CARD_PLACE_DURATION + PIN_DURATION;
+}
+
+function getCurveControls(prev, curr, fromLeft) {
+  const dy = curr.y - prev.y;
+  const spread = Math.min(Math.abs(curr.x - prev.x) * 0.28, 52);
+  return {
+    c1x: prev.x + (fromLeft ? -spread : spread),
+    c1y: prev.y + dy * 0.55,
+    c2x: curr.x + (fromLeft ? spread : -spread),
+    c2y: curr.y - dy * 0.35,
+  };
+}
+
+function buildTimelineSegments(trackEl, cardEls) {
+  const cards = cardEls.filter(Boolean);
+  if (!trackEl || cards.length < 2) return null;
+
+  const tRect = trackEl.getBoundingClientRect();
+  if (tRect.width <= 0 || tRect.height <= 0) return null;
+
+  const anchors = cards.map((card, index) => {
+    const rect = card.getBoundingClientRect();
+    if (index === 0) {
+      return {
+        x: rect.right - tRect.left - LINE_START_INSET_X,
+        y: rect.top - tRect.top + LINE_START_OFFSET_Y,
+      };
+    }
+    return {
+      x: rect.left + rect.width / 2 - tRect.left,
+      y: rect.top - tRect.top + LINE_END_OFFSET_Y,
+    };
+  });
+
+  const segments = anchors.slice(0, -1).map((start, index) => {
+    const end = anchors[index + 1];
+    const fromLeft = index % 2 === 0;
+    const control = getCurveControls(start, end, fromLeft);
+    return {
+      index,
+      pathD: `M ${start.x} ${start.y} C ${control.c1x} ${control.c1y}, ${control.c2x} ${control.c2y}, ${end.x} ${end.y}`,
+    };
+  });
+
+  return {
+    segments,
+    width: tRect.width,
+    height: tRect.height,
+  };
 }
 
 function Pushpin({ id }) {
@@ -106,13 +177,9 @@ function Pushpin({ id }) {
   );
 }
 
-function CurvedConnector({ index, isActive, fromLeft }) {
+function LineSegment({ pathD, index, isActive }) {
   const pathRef = useRef(null);
   const [pathLen, setPathLen] = useState(0);
-  const baseDelay = getSegmentStart(index) + PIN_DURATION + CARD_OFFSET;
-  const pathD = fromLeft
-    ? 'M 22 6 C 38 18, 62 48, 78 74'
-    : 'M 78 6 C 62 18, 38 48, 22 74';
 
   useLayoutEffect(() => {
     if (pathRef.current) {
@@ -121,45 +188,108 @@ function CurvedConnector({ index, isActive, fromLeft }) {
   }, [pathD]);
 
   const hiddenOffset = pathLen || 1;
-  const dashSegment = pathLen > 0 ? pathLen / (CONNECTOR_DASH_COUNT * 2) : 0;
-  const strokeDasharray = dashSegment > 0 ? `${dashSegment} ${dashSegment}` : undefined;
 
   return (
-    <div
-      className={`sticky-connector sticky-connector--vertical ${fromLeft ? 'sticky-connector--to-right' : 'sticky-connector--to-left'}`}
-      aria-hidden="true"
-    >
-      <svg className="sticky-connector__svg" viewBox="0 0 100 80" preserveAspectRatio="none">
-        <motion.path
-          ref={pathRef}
-          className="sticky-connector__path"
-          d={pathD}
-          fill="none"
-          strokeDasharray={strokeDasharray}
-          initial={{ strokeDashoffset: hiddenOffset, opacity: 0 }}
-          animate={
-            isActive
-              ? { strokeDashoffset: 0, opacity: pathLen > 0 ? 1 : 0 }
-              : { strokeDashoffset: hiddenOffset, opacity: 0 }
-          }
-          transition={{ delay: baseDelay, duration: LINE_DURATION, ease: 'easeInOut' }}
-        />
+    <motion.path
+      ref={pathRef}
+      className="sticky-timeline-line__path"
+      d={pathD}
+      fill="none"
+      strokeDasharray={`${DASH_LENGTH} ${DASH_GAP}`}
+      initial={{ strokeDashoffset: hiddenOffset, opacity: 0 }}
+      animate={
+        isActive
+          ? { strokeDashoffset: 0, opacity: pathLen > 0 ? 1 : 0 }
+          : { strokeDashoffset: hiddenOffset, opacity: 0 }
+      }
+      transition={{
+        delay: getLineSegmentDelay(index),
+        duration: LINE_DURATION,
+        ease: 'easeInOut',
+      }}
+    />
+  );
+}
+
+function TimelineLine({ isActive, cardRefs, trackRef, layoutVersion }) {
+  const [geometry, setGeometry] = useState(null);
+
+  const updateGeometry = useCallback(() => {
+    const next = buildTimelineSegments(trackRef.current, cardRefs.current);
+    if (next) setGeometry(next);
+  }, [cardRefs, trackRef]);
+
+  useLayoutEffect(() => {
+    updateGeometry();
+
+    const trackEl = trackRef.current;
+    if (!trackEl) return undefined;
+
+    const observer = new ResizeObserver(updateGeometry);
+    observer.observe(trackEl);
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
+    window.addEventListener('resize', updateGeometry);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateGeometry);
+    };
+  }, [cardRefs, trackRef, updateGeometry, layoutVersion]);
+
+  useLayoutEffect(() => {
+    if (!isActive) return undefined;
+
+    updateGeometry();
+    const t1 = window.setTimeout(updateGeometry, 500);
+    const t2 = window.setTimeout(updateGeometry, 1400);
+    const t3 = window.setTimeout(updateGeometry, 2800);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+    };
+  }, [isActive, updateGeometry]);
+
+  const viewBox = geometry ? `0 0 ${geometry.width} ${geometry.height}` : '0 0 1 1';
+
+  return (
+    <div className="sticky-timeline-line" aria-hidden="true">
+      <svg
+        className="sticky-timeline-line__svg"
+        viewBox={viewBox}
+        width={geometry?.width}
+        height={geometry?.height}
+      >
+        {geometry?.segments.map((segment) => (
+          <LineSegment
+            key={`line-segment-${segment.index}`}
+            pathD={segment.pathD}
+            index={segment.index}
+            isActive={isActive}
+          />
+        ))}
       </svg>
     </div>
   );
 }
 
-function StickyNote({ step, index, isActive, isLeft }) {
-  const noteDelay = getSegmentStart(index);
+const StickyNote = forwardRef(function StickyNote({ step, index, isActive, isLeft }, ref) {
+  const segmentDelay = getSegmentStart(index);
+  const cardDelay = getCardDelay(index);
+  const pinDelay = getPinDelay(index);
 
   return (
     <motion.div
       className={`sticky-note-card-wrapper ${isLeft ? 'sticky-note-card-wrapper--left' : 'sticky-note-card-wrapper--right'}`}
+      style={{ '--step-row': index + 1 }}
       initial={{ opacity: 0 }}
       animate={isActive ? { opacity: 1 } : { opacity: 0 }}
-      transition={{ delay: noteDelay, duration: 0.01 }}
+      transition={{ delay: segmentDelay, duration: 0.01 }}
     >
       <motion.div
+        ref={ref}
         className="sticky-note-card"
         style={{
           '--note-accent': step.accent,
@@ -172,8 +302,8 @@ function StickyNote({ step, index, isActive, isLeft }) {
             : { scale: 0.9, y: -16, opacity: 0, rotate: step.rotate }
         }
         transition={{
-          delay: noteDelay + CARD_OFFSET,
-          duration: 0.45,
+          delay: cardDelay,
+          duration: CARD_PLACE_DURATION,
           type: 'spring',
           stiffness: 340,
           damping: 22,
@@ -189,7 +319,7 @@ function StickyNote({ step, index, isActive, isLeft }) {
                 : { y: -24, opacity: 0, scale: 0.55 }
             }
             transition={{
-              delay: noteDelay,
+              delay: pinDelay,
               duration: PIN_DURATION,
               type: 'spring',
               stiffness: 520,
@@ -214,11 +344,22 @@ function StickyNote({ step, index, isActive, isLeft }) {
       </motion.div>
     </motion.div>
   );
-}
+});
 
 export default function OurProcess() {
   const boardRef = useRef(null);
+  const trackRef = useRef(null);
+  const cardRefs = useRef([]);
   const isActive = useInView(boardRef, { once: true, amount: 0.15 });
+
+  const [layoutVersion, setLayoutVersion] = useState(0);
+
+  const setCardRef = useCallback((index) => (node) => {
+    cardRefs.current[index] = node;
+    if (node && index === steps.length - 1) {
+      setLayoutVersion((version) => version + 1);
+    }
+  }, []);
 
   return (
     <section id="process" className="sticky-timeline-section">
@@ -231,19 +372,27 @@ export default function OurProcess() {
         </AnimatedSection>
 
         <div className="sticky-timeline-board sticky-timeline-board--vertical" ref={boardRef}>
-          <div className="sticky-notes-track sticky-notes-track--vertical">
+          <div className="sticky-notes-track sticky-notes-track--vertical" ref={trackRef}>
             {steps.map((step, idx) => {
               const isLeft = idx % 2 === 0;
 
               return (
-                <div key={step.num} className="sticky-notes-segment sticky-notes-segment--vertical">
-                  <StickyNote step={step} index={idx} isActive={isActive} isLeft={isLeft} />
-                  {idx < steps.length - 1 && (
-                    <CurvedConnector index={idx} isActive={isActive} fromLeft={isLeft} />
-                  )}
-                </div>
+                <StickyNote
+                  key={step.num}
+                  ref={setCardRef(idx)}
+                  step={step}
+                  index={idx}
+                  isActive={isActive}
+                  isLeft={isLeft}
+                />
               );
             })}
+            <TimelineLine
+              isActive={isActive}
+              cardRefs={cardRefs}
+              trackRef={trackRef}
+              layoutVersion={layoutVersion}
+            />
           </div>
         </div>
       </div>

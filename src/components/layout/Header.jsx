@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { buildWhatsAppUrl } from '../../utils/whatsapp';
@@ -19,11 +19,56 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [lang, setLang] = useState('EN');
+  const [activeHref, setActiveHref] = useState('#home');
+  const innerRef = useRef(null);
+  const [innerDroplet, setInnerDroplet] = useState({ x: 0, y: 0, visible: false });
+
+  const handleInnerMouseMove = useCallback((event) => {
+    const rect = innerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    setInnerDroplet({
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+      visible: true,
+    });
+  }, []);
+
+  const handleInnerMouseLeave = useCallback(() => {
+    setInnerDroplet((prev) => ({ ...prev, visible: false }));
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = navLinks
+      .map((link) => document.getElementById(link.href.slice(1)))
+      .filter(Boolean);
+
+    if (sections.length === 0) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible.length > 0) {
+          setActiveHref(`#${visible[0].target.id}`);
+        }
+      },
+      {
+        rootMargin: '-20% 0px -55% 0px',
+        threshold: [0, 0.15, 0.35, 0.55],
+      },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -79,13 +124,32 @@ export default function Header() {
             <img src="/assets/logo.png" alt="Admission Turkey" loading="eager" />
           </motion.a>
 
-          <div className="header__inner">
-            <nav className="header__nav">
-              {navLinks.map((link, i) => (
-                <span key={link.label} className="header__nav-item">
-                  {i > 0 && <span className="header__nav-divider">|</span>}
-                  <a href={link.href}>{link.label}</a>
-                </span>
+          <div
+            ref={innerRef}
+            className="header__inner"
+            onMouseMove={handleInnerMouseMove}
+            onMouseEnter={handleInnerMouseMove}
+            onMouseLeave={handleInnerMouseLeave}
+          >
+            <span
+              className={`glass-btn__droplet header__inner-droplet${innerDroplet.visible ? ' glass-btn__droplet--active' : ''}`}
+              aria-hidden="true"
+              style={{
+                left: `${innerDroplet.x}px`,
+                top: `${innerDroplet.y}px`,
+              }}
+            />
+            <span className="glass-btn__shine header__inner-shine" aria-hidden="true" />
+            <nav className="header__nav" aria-label="Main navigation">
+              {navLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className={`header__nav-link${activeHref === link.href ? ' header__nav-link--active' : ''}`}
+                  aria-current={activeHref === link.href ? 'page' : undefined}
+                >
+                  {link.label}
+                </a>
               ))}
             </nav>
 

@@ -85,8 +85,13 @@ const highlights = [
   },
 ];
 
+const baseZIndexes = [5, 7, 10, 7, 5];
+
+const hoverSpring = { type: 'spring', stiffness: 380, damping: 24 };
+
 export default function TurkeyInfo() {
   const [isMobile, setIsMobile] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const [statCardsRef, statCardsVisible] = useScrollAnimation(0.12);
   const [floatingRef, floatingVisible] = useScrollAnimation(0.08);
 
@@ -131,15 +136,24 @@ export default function TurkeyInfo() {
             return (
             <motion.div
               key={h.category}
-              className={`turkey-info__floating-card turkey-info__floating-card--${cardVariants[i]} turkey-info__floating-card--pos-${i + 1}`}
+              className={`turkey-info__floating-card turkey-info__floating-card--${cardVariants[i]} turkey-info__floating-card--pos-${i + 1}${hoveredIndex === i ? ' turkey-info__floating-card--lifted' : ''}`}
               custom={layout}
               variants={floatingCardVariants}
               initial="hidden"
               animate={floatingVisible ? 'visible' : 'hidden'}
+              style={{ zIndex: hoveredIndex === i ? 50 : baseZIndexes[i] }}
+              onHoverStart={() => setHoveredIndex(i)}
+              onHoverEnd={() => setHoveredIndex(null)}
               whileHover={
                 isMobile
-                  ? { scale: 1.03, y: -6 }
-                  : { scale: 1.06, y: layout.y - 14, rotate: 0, zIndex: 20 }
+                  ? { scale: 1.04, y: -10, transition: hoverSpring }
+                  : {
+                      scale: 1.1,
+                      y: layout.y - 32,
+                      rotate: 0,
+                      x: layout.x,
+                      transition: hoverSpring,
+                    }
               }
             >
               <span className="turkey-info__floating-card-category">
@@ -153,7 +167,7 @@ export default function TurkeyInfo() {
           })}
         </div>
 
-        <AnimatedSection direction="right" delay={0.2}>
+        {/* <AnimatedSection direction="right" delay={0.2}>
           <div className="turkey-info__right-content">
             <div className="turkey-info__stat-cards" ref={statCardsRef}>
               {stats.map((stat, i) => (
@@ -179,15 +193,10 @@ export default function TurkeyInfo() {
               ))}
             </div>
 
-            {/* <div className="turkey-info__university-image">
-              <img
-                src="/assets/aerial-university.jpg"
-                alt="Beautiful Turkish University Campus Aerial View"
-              />
-            </div> */}
+
             
           </div>
-        </AnimatedSection>
+        </AnimatedSection> */}
       </div>
     </section>
   );

@@ -67,55 +67,57 @@ export default function FindUniversity() {
           </p>
         </AnimatedSection>
 
-        {/* Cards Grid */}
-        <div className="university-grid">
-          {universities.map((uni, idx) => (
-            <motion.div
-              key={uni.name}
-              className="university-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
-            >
-              {/* Cover Image */}
-              <div className="university-card__image-container">
-                <img src={uni.image} alt={uni.name} className="university-card__image" />
-                <span
-                  className={`university-card__badge university-card__badge--${uni.type.toLowerCase()}`}
-                >
-                  {uni.type}
-                </span>
-              </div>
-
-              <div className="university-card__content">
-                <h4 className="university-card__title">{uni.name}</h4>
-                <span className="university-card__location">{uni.location}</span>
-
-                <div className="university-card__meta">
-                  <div className="university-card__meta-item">
-                    <span className="university-card__meta-val">{uni.programs}</span>
-                    <span className="university-card__meta-lbl">Programs</span>
-                  </div>
-                  <div className="university-card__meta-item">
-                    <span className="university-card__meta-val university-card__meta-val--tuition">
-                      {uni.tuition}
-                    </span>
-                    <span className="university-card__meta-lbl">From</span>
-                  </div>
+        {/* Cards — horizontal scroll on mobile, grid on desktop */}
+        <div className="university-grid-scroll">
+          <div className="university-grid">
+            {universities.map((uni, idx) => (
+              <motion.div
+                key={uni.name}
+                className="university-card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.08 }}
+              >
+                {/* Cover Image */}
+                <div className="university-card__image-container">
+                  <img src={uni.image} alt={uni.name} className="university-card__image" />
+                  <span
+                    className={`university-card__badge university-card__badge--${uni.type.toLowerCase()}`}
+                  >
+                    {uni.type}
+                  </span>
                 </div>
 
-                <GlassButton
-                  type="button"
-                  variant="outline-navy"
-                  className="university-card__btn"
-                  onClick={openApplyForm}
-                >
-                  View Programs
-                </GlassButton>
-              </div>
-            </motion.div>
-          ))}
+                <div className="university-card__content">
+                  <h4 className="university-card__title">{uni.name}</h4>
+                  <span className="university-card__location">{uni.location}</span>
+
+                  <div className="university-card__meta">
+                    <div className="university-card__meta-item">
+                      <span className="university-card__meta-val">{uni.programs}</span>
+                      <span className="university-card__meta-lbl">Programs</span>
+                    </div>
+                    <div className="university-card__meta-item">
+                      <span className="university-card__meta-val university-card__meta-val--tuition">
+                        {uni.tuition}
+                      </span>
+                      <span className="university-card__meta-lbl">From</span>
+                    </div>
+                  </div>
+
+                  <GlassButton
+                    type="button"
+                    variant="outline-navy"
+                    className="university-card__btn"
+                    onClick={openApplyForm}
+                  >
+                    View Programs
+                  </GlassButton>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* Bottom CTA */}
